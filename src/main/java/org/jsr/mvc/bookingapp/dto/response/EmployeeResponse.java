@@ -1,4 +1,8 @@
 package org.jsr.mvc.bookingapp.dto.response;
 
-public class EmployeeResponse {
+public record EmployeeResponse (
+        Long id,
+        String email,
+        String specialization
+){
 }

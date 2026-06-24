@@ -1,4 +1,7 @@
 package org.jsr.mvc.bookingapp.dto.request;
 
-public class EmployeeRequest {
+public record EmployeeRequest(
+        Long userId,
+        String specialization
+) {
 }
