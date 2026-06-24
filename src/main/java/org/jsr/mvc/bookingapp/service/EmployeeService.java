@@ -8,6 +8,9 @@ import org.jsr.mvc.bookingapp.repo.EmployeeRepository;
 import org.jsr.mvc.bookingapp.repo.UserRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class EmployeeService {
 
@@ -20,7 +23,7 @@ public class EmployeeService {
     }
 
     public EmployeeResponse create(EmployeeRequest employeeRequest) {
-        User user = userRepository.findById(employeeRequest.userId()).orElseThrow();
+        User user = userRepository.findById(employeeRequest.userId()).orElseThrow(() -> new RuntimeException("Пользователь не найден"));
 
         Employee employee = Employee.builder()
                 .user(user)
@@ -35,5 +38,42 @@ public class EmployeeService {
                 saved.getSpecialization()
         );
 
+    }
+
+    public EmployeeResponse findById(Long id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Рабочий не найден"));
+
+        return new EmployeeResponse(
+                employee.getId(),
+                employee.getUser().getEmail(),
+                employee.getSpecialization()
+        );
+
+    }
+
+    public List<EmployeeResponse> findAll() {
+
+        List<Employee> employees = employeeRepository.findAll();
+
+        List<EmployeeResponse> responseList = new ArrayList<>();
+
+        for (Employee employee : employees) {
+
+            EmployeeResponse response = new EmployeeResponse(
+                    employee.getId(),
+                    employee.getUser().getEmail(),
+                    employee.getSpecialization()
+            );
+
+            responseList.add(response);
+        }
+
+        return responseList;
+    }
+
+    public void delete(Long id) {
+        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Id не найден"));
+
+        employeeRepository.delete(employee);
     }
 }
