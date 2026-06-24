@@ -16,7 +16,7 @@ import java.time.Duration;
 @Entity
 @Table(name = "services")
 @Builder
-public class Service {
+public class BookingService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
