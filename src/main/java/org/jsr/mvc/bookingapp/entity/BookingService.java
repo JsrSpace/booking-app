@@ -21,13 +21,10 @@ public class BookingService {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank(message = "Name cannot be empty")
     public String name;
 
     private Duration durationMinutes;
 
-    @DecimalMin(value = "0.00", inclusive = false, message = "Price cannot be less than 0")
-    @Digits(integer = 10, fraction = 2)
     private BigDecimal price;
 
 
