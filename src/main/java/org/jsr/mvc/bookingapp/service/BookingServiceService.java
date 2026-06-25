@@ -67,7 +67,7 @@ public class BookingServiceService {
         return bookingServiceResponses;
     }
 
-    public void delete(Long id) {
+    public void deleteById(Long id) {
 
         BookingService bookingService = bookingRepository.findById(id).orElseThrow(() -> new RuntimeException("Id не нвйден"));
 

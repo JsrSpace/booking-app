@@ -6,7 +6,7 @@ import java.time.Duration;
 public record BookingServiceResponse(
         Long id,
         String name,
-        Duration durationMinutes,
+        Long durationMinutes,
         BigDecimal price
 ) {
 }

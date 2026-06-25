@@ -71,7 +71,7 @@ public class EmployeeService {
         return responseList;
     }
 
-    public void delete(Long id) {
+    public void deleteById(Long id) {
         Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Id не найден"));
 
         employeeRepository.delete(employee);

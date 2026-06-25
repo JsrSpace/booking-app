@@ -22,17 +22,17 @@ public class BookingServiceController {
     }
 
     @GetMapping("/{id}")
-    private BookingServiceResponse findById(@PathVariable Long id) {
+    public BookingServiceResponse findById(@PathVariable Long id) {
         return bookingServiceService.findById(id);
     }
 
     @GetMapping
-    private List<BookingServiceResponse> findAll() {
+    public List<BookingServiceResponse> findAll() {
         return bookingServiceService.findAll();
     }
 
-    @DeleteMapping("/{is}")
+    @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
-        bookingServiceService.delete(id);
+        bookingServiceService.deleteById(id);
     }
 }

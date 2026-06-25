@@ -13,7 +13,7 @@ public record BookingServiceRequest(
         String name,
 
         @Min(1)
-        Duration durationMinutes,
+        Long durationMinutes,
 
         @DecimalMin(value = "0.00", inclusive = false, message = "Price cannot be less than 0")
         @Digits(integer = 10, fraction = 2)

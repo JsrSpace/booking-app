@@ -1,13 +1,9 @@
 package org.jsr.mvc.bookingapp.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Digits;
-import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,7 +19,7 @@ public class BookingService {
 
     public String name;
 
-    private Duration durationMinutes;
+    private Long durationMinutes;
 
     private BigDecimal price;
 
