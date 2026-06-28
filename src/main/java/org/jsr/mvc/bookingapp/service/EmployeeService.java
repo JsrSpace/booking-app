@@ -4,6 +4,7 @@ import org.jsr.mvc.bookingapp.dto.request.EmployeeRequest;
 import org.jsr.mvc.bookingapp.dto.response.EmployeeResponse;
 import org.jsr.mvc.bookingapp.entity.Employee;
 import org.jsr.mvc.bookingapp.entity.User;
+import org.jsr.mvc.bookingapp.exception.ResourceNotFoundException;
 import org.jsr.mvc.bookingapp.repo.EmployeeRepository;
 import org.jsr.mvc.bookingapp.repo.UserRepository;
 import org.springframework.stereotype.Service;
@@ -23,7 +24,10 @@ public class EmployeeService {
     }
 
     public EmployeeResponse create(EmployeeRequest employeeRequest) {
-        User user = userRepository.findById(employeeRequest.userId()).orElseThrow(() -> new RuntimeException("Пользователь не найден"));
+        User user = userRepository.findById(employeeRequest.userId()).
+                orElseThrow(() -> new ResourceNotFoundException(
+                        "Пользователь не найден")
+                );
 
         Employee employee = Employee.builder()
                 .user(user)
@@ -41,7 +45,10 @@ public class EmployeeService {
     }
 
     public EmployeeResponse findById(Long id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Рабочий не найден"));
+        Employee employee = employeeRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException(
+                        "Рабочий не найден")
+                );
 
         return new EmployeeResponse(
                 employee.getId(),
@@ -72,7 +79,10 @@ public class EmployeeService {
     }
 
     public void deleteById(Long id) {
-        Employee employee = employeeRepository.findById(id).orElseThrow(() -> new RuntimeException("Id не найден"));
+        Employee employee = employeeRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException(
+                        "Рабочий удален либо не найден"
+                ));
 
         employeeRepository.delete(employee);
     }

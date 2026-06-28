@@ -25,6 +25,15 @@ public class JwtService {
                 .compact();
     }
 
+    public String extractUsername(String token) {
+
+        return Jwts.parserBuilder()
+                .setSigningKey(getSignKey())
+                .build()
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
 
     private Key getSignKey() {
         byte[] keyBytes = SECRET_KEY.getBytes();

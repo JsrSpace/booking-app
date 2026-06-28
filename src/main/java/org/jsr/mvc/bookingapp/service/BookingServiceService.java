@@ -3,10 +3,9 @@ package org.jsr.mvc.bookingapp.service;
 import org.jsr.mvc.bookingapp.dto.request.BookingServiceRequest;
 import org.jsr.mvc.bookingapp.dto.response.BookingServiceResponse;
 import org.jsr.mvc.bookingapp.entity.BookingService;
+import org.jsr.mvc.bookingapp.exception.ResourceNotFoundException;
 import org.jsr.mvc.bookingapp.repo.BookingRepository;
 import org.springframework.stereotype.Service;
-
-import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +36,10 @@ public class BookingServiceService {
 
     public BookingServiceResponse findById(Long id) {
 
-        BookingService bookingService = bookingRepository.findById(id).orElseThrow(() -> new RuntimeException("Id не нвйден"));
+        BookingService bookingService = bookingRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException(
+                        "Сервис с id: " + id + " не найден"
+                ));
 
         return new BookingServiceResponse(
                 bookingService.getId(),
@@ -69,7 +71,10 @@ public class BookingServiceService {
 
     public void deleteById(Long id) {
 
-        BookingService bookingService = bookingRepository.findById(id).orElseThrow(() -> new RuntimeException("Id не нвйден"));
+        BookingService bookingService = bookingRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException(
+                        "Севис уже удален либо не найден"
+                ));
 
         bookingRepository.delete(bookingService);
 

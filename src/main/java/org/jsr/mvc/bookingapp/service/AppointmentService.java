@@ -3,6 +3,7 @@ package org.jsr.mvc.bookingapp.service;
 import org.jsr.mvc.bookingapp.dto.request.AppointmentRequest;
 import org.jsr.mvc.bookingapp.dto.response.AppointmentResponse;
 import org.jsr.mvc.bookingapp.entity.*;
+import org.jsr.mvc.bookingapp.exception.ResourceNotFoundException;
 import org.jsr.mvc.bookingapp.repo.AppointmentRepository;
 import org.jsr.mvc.bookingapp.repo.BookingRepository;
 import org.jsr.mvc.bookingapp.repo.EmployeeRepository;
@@ -29,11 +30,20 @@ public class AppointmentService {
     }
 
     public AppointmentResponse create(AppointmentRequest appointmentRequest) {
-        User user = userRepository.findById(appointmentRequest.customerId()).orElseThrow(() -> new RuntimeException("Id не найжен"));
+        User user = userRepository.findById(appointmentRequest.customerId()).
+                orElseThrow(() -> new ResourceNotFoundException(
+                "Пользователь не найден"
+        ));
 
-        Employee employee = employeeRepository.findById(appointmentRequest.employeeId()).orElseThrow(() -> new RuntimeException("Id не найден"));
+        Employee employee = employeeRepository.findById(appointmentRequest.employeeId()).
+                orElseThrow(() -> new ResourceNotFoundException(
+                        "Рабочий не найден"
+                ));
 
-        BookingService bookingService = bookingRepository.findById(appointmentRequest.serviceId()).orElseThrow(() -> new RuntimeException("Id не найден"));
+        BookingService bookingService = bookingRepository.findById(appointmentRequest.serviceId()).
+                orElseThrow(() -> new ResourceNotFoundException(
+                        "Сервис не найден"
+                ));
 
         LocalDateTime startTime = appointmentRequest.startTime();
 
@@ -98,7 +108,10 @@ public class AppointmentService {
 
     public AppointmentResponse findById(Long id) {
 
-        Appointment appointment = appointmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found"));
+        Appointment appointment = appointmentRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException(
+                        "Встреча не найдена"
+                ));
 
         return new AppointmentResponse(
                 appointment.getId(),
@@ -112,7 +125,10 @@ public class AppointmentService {
     }
 
     public void deleteById(Long id) {
-        Appointment appointment = appointmentRepository.findById(id).orElseThrow(() -> new RuntimeException("Id not found"));
+        Appointment appointment = appointmentRepository.findById(id).
+                orElseThrow(() -> new ResourceNotFoundException(
+                        "Встреча уже удалена либо не найдена"
+                ));
 
         appointmentRepository.delete(appointment);
     }
