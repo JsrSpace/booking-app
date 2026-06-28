@@ -18,10 +18,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Email(message = "Invalid email format")
     private String email;
 
-    @Size(min = 8)
     private String password;
 
     @Enumerated(EnumType.STRING)
