@@ -2,6 +2,7 @@ package org.jsr.mvc.bookingapp.controller;
 
 import jakarta.validation.Valid;
 import org.jsr.mvc.bookingapp.dto.request.AppointmentRequest;
+import org.jsr.mvc.bookingapp.dto.request.AppointmentStatusRequest;
 import org.jsr.mvc.bookingapp.dto.response.AppointmentResponse;
 import org.jsr.mvc.bookingapp.service.AppointmentService;
 import org.springframework.http.HttpStatus;
@@ -41,5 +42,10 @@ public class AppointmentController {
     @DeleteMapping("/{id}")
     public void deleteAppointmentById(@PathVariable Long id) {
         appointmentService.deleteById(id);
+    }
+
+    @PatchMapping("/{id}/status")
+    public AppointmentResponse updateStatus(@PathVariable Long id, @RequestBody AppointmentStatusRequest request) {
+        return appointmentService.updateStatusAppointment(id, request);
     }
 }

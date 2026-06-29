@@ -1,5 +1,6 @@
 package org.jsr.mvc.bookingapp.service;
 
+import org.jspecify.annotations.NonNull;
 import org.jsr.mvc.bookingapp.dto.request.EmployeeRequest;
 import org.jsr.mvc.bookingapp.dto.response.EmployeeResponse;
 import org.jsr.mvc.bookingapp.entity.Employee;
@@ -36,11 +37,7 @@ public class EmployeeService {
 
         Employee saved = employeeRepository.save(employee);
 
-        return new EmployeeResponse(
-                saved.getId(),
-                saved.getUser().getEmail(),
-                saved.getSpecialization()
-        );
+        return mapToResponse(saved);
 
     }
 
@@ -50,11 +47,7 @@ public class EmployeeService {
                         "Рабочий не найден")
                 );
 
-        return new EmployeeResponse(
-                employee.getId(),
-                employee.getUser().getEmail(),
-                employee.getSpecialization()
-        );
+        return mapToResponse(employee);
 
     }
 
@@ -66,11 +59,7 @@ public class EmployeeService {
 
         for (Employee employee : employees) {
 
-            EmployeeResponse response = new EmployeeResponse(
-                    employee.getId(),
-                    employee.getUser().getEmail(),
-                    employee.getSpecialization()
-            );
+            EmployeeResponse response = mapToResponse(employee);
 
             responseList.add(response);
         }
@@ -85,5 +74,31 @@ public class EmployeeService {
                 ));
 
         employeeRepository.delete(employee);
+    }
+
+    public EmployeeResponse updateById(Long id, EmployeeRequest employeeRequest) {
+
+        Employee employee = employeeRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Работник не найден с id: " + id));
+
+        employee.setSpecialization(employeeRequest.specialization());
+
+        if (employeeRequest.userId() != null) {
+            User user = userRepository.findById(employeeRequest.userId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Пользователь не найден с id : " + employeeRequest.userId()));
+            employee.setUser(user);
+        }
+
+        Employee updatedEmployee = employeeRepository.save(employee);
+
+        return mapToResponse(updatedEmployee);
+    }
+
+    private EmployeeResponse mapToResponse(Employee employee) {
+        return new EmployeeResponse(
+                employee.getId(),
+                employee.getUser().getEmail(),
+                employee.getSpecialization()
+        );
     }
 }

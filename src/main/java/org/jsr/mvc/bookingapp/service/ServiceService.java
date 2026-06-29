@@ -1,5 +1,6 @@
 package org.jsr.mvc.bookingapp.service;
 
+import org.jspecify.annotations.NonNull;
 import org.jsr.mvc.bookingapp.dto.request.BookingServiceRequest;
 import org.jsr.mvc.bookingapp.dto.response.BookingServiceResponse;
 import org.jsr.mvc.bookingapp.entity.BookingService;
@@ -10,10 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class BookingServiceService {
+public class ServiceService {
     private final BookingRepository bookingRepository;
 
-    public BookingServiceService(BookingRepository bookingRepository) {
+    public ServiceService(BookingRepository bookingRepository) {
         this.bookingRepository = bookingRepository;
     }
 
@@ -26,12 +27,7 @@ public class BookingServiceService {
 
         BookingService saved = bookingRepository.save(bookingService);
 
-        return new BookingServiceResponse(
-                saved.getId(),
-                saved.getName(),
-                saved.getDurationMinutes(),
-                saved.getPrice()
-        );
+        return mapToResponse(saved);
     }
 
     public BookingServiceResponse findById(Long id) {
@@ -41,12 +37,7 @@ public class BookingServiceService {
                         "Сервис с id: " + id + " не найден"
                 ));
 
-        return new BookingServiceResponse(
-                bookingService.getId(),
-                bookingService.getName(),
-                bookingService.getDurationMinutes(),
-                bookingService.getPrice()
-        );
+        return mapToResponse(bookingService);
     }
 
     public List<BookingServiceResponse> findAll() {
@@ -56,12 +47,7 @@ public class BookingServiceService {
 
         for (BookingService bookingService : bookingServices) {
 
-            BookingServiceResponse bookingServiceResponse = new BookingServiceResponse(
-                    bookingService.getId(),
-                    bookingService.getName(),
-                    bookingService.getDurationMinutes(),
-                    bookingService.getPrice()
-            );
+            BookingServiceResponse bookingServiceResponse = mapToResponse(bookingService);
 
             bookingServiceResponses.add(bookingServiceResponse);
         }
@@ -78,5 +64,28 @@ public class BookingServiceService {
 
         bookingRepository.delete(bookingService);
 
+    }
+
+    public BookingServiceResponse updateService(Long id, BookingServiceRequest serviceRequest) {
+
+        BookingService service = bookingRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Сервис не найден с id: " + id));
+
+        service.setName(serviceRequest.name());
+        service.setDurationMinutes(serviceRequest.durationMinutes());
+        service.setPrice(serviceRequest.price());
+
+        BookingService updatedService = bookingRepository.save(service);
+
+        return mapToResponse(updatedService);
+    }
+
+    private BookingServiceResponse mapToResponse(BookingService updatedService) {
+        return new BookingServiceResponse(
+                updatedService.getId(),
+                updatedService.getName(),
+                updatedService.getDurationMinutes(),
+                updatedService.getPrice()
+        );
     }
 }

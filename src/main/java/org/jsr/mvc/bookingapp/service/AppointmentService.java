@@ -1,6 +1,8 @@
 package org.jsr.mvc.bookingapp.service;
 
+import org.jspecify.annotations.NonNull;
 import org.jsr.mvc.bookingapp.dto.request.AppointmentRequest;
+import org.jsr.mvc.bookingapp.dto.request.AppointmentStatusRequest;
 import org.jsr.mvc.bookingapp.dto.response.AppointmentResponse;
 import org.jsr.mvc.bookingapp.entity.*;
 import org.jsr.mvc.bookingapp.exception.ResourceNotFoundException;
@@ -70,15 +72,7 @@ public class AppointmentService {
 
         Appointment saved = appointmentRepository.save(appointment);
 
-        return new AppointmentResponse(
-                saved.getId(),
-                saved.getCustomer().getEmail(),
-                saved.getEmployee().getUser().getEmail(),
-                saved.getService().getName(),
-                saved.getStartTime(),
-                saved.getEndTime(),
-                saved.getStatus()
-        );
+        return mapToResponse(saved);
 
     }
 
@@ -89,15 +83,7 @@ public class AppointmentService {
 
         for (Appointment appointment : appointments) {
 
-            AppointmentResponse appointmentResponse = new AppointmentResponse(
-                    appointment.getId(),
-                    appointment.getCustomer().getEmail(),
-                    appointment.getEmployee().getUser().getEmail(),
-                    appointment.getService().getName(),
-                    appointment.getStartTime(),
-                    appointment.getEndTime(),
-                    appointment.getStatus()
-            );
+            AppointmentResponse appointmentResponse = mapToResponse(appointment);
 
             appointmentResponses.add(appointmentResponse);
         }
@@ -113,15 +99,7 @@ public class AppointmentService {
                         "Встреча не найдена"
                 ));
 
-        return new AppointmentResponse(
-                appointment.getId(),
-                appointment.getCustomer().getEmail(),
-                appointment.getEmployee().getUser().getEmail(),
-                appointment.getService().getName(),
-                appointment.getStartTime(),
-                appointment.getEndTime(),
-                appointment.getStatus()
-        );
+        return mapToResponse(appointment);
     }
 
     public void deleteById(Long id) {
@@ -131,5 +109,29 @@ public class AppointmentService {
                 ));
 
         appointmentRepository.delete(appointment);
+    }
+
+    public AppointmentResponse updateStatusAppointment(Long id, AppointmentStatusRequest appointmentRequest) {
+        Appointment appointment = appointmentRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Встреча не найдена с id: " + id));
+
+
+        appointment.setStatus(appointmentRequest.status());
+
+        Appointment updated = appointmentRepository.save(appointment);
+
+        return mapToResponse(updated);
+    }
+
+    private AppointmentResponse mapToResponse(Appointment appointment) {
+        return new AppointmentResponse(
+                appointment.getId(),
+                appointment.getCustomer().getEmail(),
+                appointment.getEmployee().getUser().getEmail(),
+                appointment.getService().getName(),
+                appointment.getStartTime(),
+                appointment.getEndTime(),
+                appointment.getStatus()
+        );
     }
 }

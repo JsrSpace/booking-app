@@ -1,5 +1,6 @@
 package org.jsr.mvc.bookingapp.controller;
 
+import jakarta.validation.Valid;
 import org.jsr.mvc.bookingapp.dto.request.EmployeeRequest;
 import org.jsr.mvc.bookingapp.dto.response.EmployeeResponse;
 import org.jsr.mvc.bookingapp.service.EmployeeService;
@@ -35,5 +36,10 @@ public class EmployeeController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         employeeService.deleteById(id);
+    }
+
+    @PutMapping("/{id}")
+    public EmployeeResponse updateEmployee(@PathVariable Long id, @Valid @RequestBody EmployeeRequest employeeRequest) {
+        return employeeService.updateById(id, employeeRequest);
     }
 }
